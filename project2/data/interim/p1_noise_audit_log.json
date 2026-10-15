@@ -1,0 +1,284 @@
+[
+  {
+    "instance_idx": 125,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.7962
+  },
+  {
+    "instance_idx": 404,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.8928
+  },
+  {
+    "instance_idx": 484,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "LOCATED_IN",
+    "oof_confidence": 0.9584
+  },
+  {
+    "instance_idx": 486,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.8824
+  },
+  {
+    "instance_idx": 487,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.944
+  },
+  {
+    "instance_idx": 523,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.7768
+  },
+  {
+    "instance_idx": 525,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.7768
+  },
+  {
+    "instance_idx": 608,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "LOCATED_IN",
+    "oof_confidence": 0.7977
+  },
+  {
+    "instance_idx": 617,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "LOCATED_IN",
+    "oof_confidence": 0.7977
+  },
+  {
+    "instance_idx": 622,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "LOCATED_IN",
+    "oof_confidence": 0.9351
+  },
+  {
+    "instance_idx": 767,
+    "p1_noisy_label": "TARGETS",
+    "p2_confident_label": "NONE",
+    "oof_confidence": 0.7878
+  },
+  {
+    "instance_idx": 869,
+    "p1_noisy_label": "TARGETS",
+    "p2_confident_label": "NONE",
+    "oof_confidence": 0.8012
+  },
+  {
+    "instance_idx": 877,
+    "p1_noisy_label": "TARGETS",
+    "p2_confident_label": "NONE",
+    "oof_confidence": 0.8012
+  },
+  {
+    "instance_idx": 881,
+    "p1_noisy_label": "TARGETS",
+    "p2_confident_label": "NONE",
+    "oof_confidence": 0.8012
+  },
+  {
+    "instance_idx": 882,
+    "p1_noisy_label": "TARGETS",
+    "p2_confident_label": "NONE",
+    "oof_confidence": 0.8012
+  },
+  {
+    "instance_idx": 883,
+    "p1_noisy_label": "TARGETS",
+    "p2_confident_label": "NONE",
+    "oof_confidence": 0.8012
+  },
+  {
+    "instance_idx": 884,
+    "p1_noisy_label": "TARGETS",
+    "p2_confident_label": "NONE",
+    "oof_confidence": 0.8012
+  },
+  {
+    "instance_idx": 890,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "TARGETS",
+    "oof_confidence": 0.8573
+  },
+  {
+    "instance_idx": 892,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "LOCATED_IN",
+    "oof_confidence": 0.9679
+  },
+  {
+    "instance_idx": 897,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "LOCATED_IN",
+    "oof_confidence": 0.9679
+  },
+  {
+    "instance_idx": 902,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "TARGETS",
+    "oof_confidence": 0.8479
+  },
+  {
+    "instance_idx": 905,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "LOCATED_IN",
+    "oof_confidence": 0.9679
+  },
+  {
+    "instance_idx": 908,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.7996
+  },
+  {
+    "instance_idx": 913,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.7996
+  },
+  {
+    "instance_idx": 926,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "LOCATED_IN",
+    "oof_confidence": 0.9679
+  },
+  {
+    "instance_idx": 930,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "TARGETS",
+    "oof_confidence": 0.8573
+  },
+  {
+    "instance_idx": 939,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.9399
+  },
+  {
+    "instance_idx": 1016,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "LOCATED_IN",
+    "oof_confidence": 0.961
+  },
+  {
+    "instance_idx": 1022,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.9483
+  },
+  {
+    "instance_idx": 1100,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.8346
+  },
+  {
+    "instance_idx": 1101,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.7658
+  },
+  {
+    "instance_idx": 1103,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.8346
+  },
+  {
+    "instance_idx": 1105,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.8346
+  },
+  {
+    "instance_idx": 1110,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.7658
+  },
+  {
+    "instance_idx": 1115,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.7658
+  },
+  {
+    "instance_idx": 1447,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "LOCATED_IN",
+    "oof_confidence": 0.9523
+  },
+  {
+    "instance_idx": 1456,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.9415
+  },
+  {
+    "instance_idx": 1464,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "LOCATED_IN",
+    "oof_confidence": 0.9523
+  },
+  {
+    "instance_idx": 1468,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "SUPPORTS",
+    "oof_confidence": 0.9415
+  },
+  {
+    "instance_idx": 1476,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "TARGETS",
+    "oof_confidence": 0.7795
+  },
+  {
+    "instance_idx": 1498,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "TARGETS",
+    "oof_confidence": 0.8362
+  },
+  {
+    "instance_idx": 1502,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "TARGETS",
+    "oof_confidence": 0.8362
+  },
+  {
+    "instance_idx": 1510,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "TARGETS",
+    "oof_confidence": 0.8362
+  },
+  {
+    "instance_idx": 1511,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "TARGETS",
+    "oof_confidence": 0.8362
+  },
+  {
+    "instance_idx": 1512,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "TARGETS",
+    "oof_confidence": 0.8362
+  },
+  {
+    "instance_idx": 1515,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "TARGETS",
+    "oof_confidence": 0.8362
+  },
+  {
+    "instance_idx": 1528,
+    "p1_noisy_label": "NONE",
+    "p2_confident_label": "LOCATED_IN",
+    "oof_confidence": 0.8777
+  }
+]
