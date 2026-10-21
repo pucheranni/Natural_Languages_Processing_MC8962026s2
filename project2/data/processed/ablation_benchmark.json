@@ -2,16 +2,20 @@
   {
     "model_name": "naive_bayes",
     "feature_col": "masked_positional_tokens",
+    "target_col": "silver_label",
     "ngram_range": [
       1,
       3
     ],
     "weighting": "tfidf",
-    "accuracy": 0.7168,
-    "macro_precision": 0.1173,
-    "macro_recall": 0.1426,
-    "macro_f1": 0.1209,
-    "micro_f1": 0.7168,
+    "accuracy": 0.6506,
+    "macro_precision": 0.5213,
+    "macro_recall": 0.1496,
+    "macro_f1": 0.1256,
+    "macro_f1_std": 0.0146,
+    "positive_f1": 0.0154,
+    "positive_f1_std": 0.0166,
+    "micro_f1": 0.6506,
     "per_class": {
       "CONFIRMS": {
         "precision": 0.0,
@@ -26,16 +30,16 @@
         "support": 4
       },
       "LOCATED_IN": {
-        "precision": 0.0,
-        "recall": 0.0,
-        "f1": 0.0,
+        "precision": 1.0,
+        "recall": 0.029,
+        "f1": 0.0563,
         "support": 138
       },
       "NONE": {
-        "precision": 0.7213,
-        "recall": 0.9927,
-        "f1": 0.8356,
-        "support": 1103
+        "precision": 0.6488,
+        "recall": 1.0,
+        "f1": 0.787,
+        "support": 776
       },
       "REVEALS": {
         "precision": 0.0,
@@ -44,15 +48,15 @@
         "support": 24
       },
       "SUPPORTS": {
-        "precision": 0.1,
+        "precision": 1.0,
         "recall": 0.0057,
-        "f1": 0.0108,
+        "f1": 0.0113,
         "support": 176
       },
       "TARGETS": {
-        "precision": 0.0,
-        "recall": 0.0,
-        "f1": 0.0,
+        "precision": 1.0,
+        "recall": 0.0125,
+        "f1": 0.0247,
         "support": 80
       }
     },
@@ -78,19 +82,19 @@
       [
         0,
         0,
+        4,
+        134,
         0,
-        137,
         0,
-        1,
         0
       ],
       [
         0,
         0,
-        1,
-        1095,
         0,
-        7,
+        776,
+        0,
+        0,
         0
       ],
       [
@@ -117,8 +121,8 @@
         0,
         79,
         0,
-        1,
-        0
+        0,
+        1
       ]
     ],
     "classes": [
@@ -136,16 +140,20 @@
   {
     "model_name": "logistic_regression",
     "feature_col": "masked_positional_tokens",
+    "target_col": "silver_label",
     "ngram_range": [
       1,
       1
     ],
     "weighting": "tfidf",
-    "accuracy": 0.7665,
-    "macro_precision": 0.4441,
-    "macro_recall": 0.5555,
-    "macro_f1": 0.4847,
-    "micro_f1": 0.7665,
+    "accuracy": 0.8186,
+    "macro_precision": 0.5005,
+    "macro_recall": 0.4578,
+    "macro_f1": 0.4615,
+    "macro_f1_std": 0.0434,
+    "positive_f1": 0.3917,
+    "positive_f1_std": 0.0496,
+    "micro_f1": 0.8186,
     "per_class": {
       "CONFIRMS": {
         "precision": 0.0,
@@ -160,33 +168,33 @@
         "support": 4
       },
       "LOCATED_IN": {
-        "precision": 0.6474,
-        "recall": 0.8913,
-        "f1": 0.75,
+        "precision": 0.7722,
+        "recall": 0.8841,
+        "f1": 0.8243,
         "support": 138
       },
       "NONE": {
-        "precision": 0.9369,
-        "recall": 0.7407,
-        "f1": 0.8273,
-        "support": 1103
+        "precision": 0.8644,
+        "recall": 0.8956,
+        "f1": 0.8797,
+        "support": 776
       },
       "REVEALS": {
-        "precision": 0.3939,
-        "recall": 0.5417,
-        "f1": 0.4561,
+        "precision": 0.5,
+        "recall": 0.125,
+        "f1": 0.2,
         "support": 24
       },
       "SUPPORTS": {
-        "precision": 0.5034,
-        "recall": 0.8523,
-        "f1": 0.6329,
+        "precision": 0.7534,
+        "recall": 0.625,
+        "f1": 0.6832,
         "support": 176
       },
       "TARGETS": {
-        "precision": 0.6273,
-        "recall": 0.8625,
-        "f1": 0.7263,
+        "precision": 0.6136,
+        "recall": 0.675,
+        "f1": 0.6429,
         "support": 80
       }
     },
@@ -195,64 +203,64 @@
         0,
         0,
         0,
+        2,
         1,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
         3,
+        1,
         0,
         0
       ],
       [
         0,
         0,
-        0,
-        1,
-        3,
-        0,
-        0
-      ],
-      [
-        0,
-        0,
-        123,
+        122,
         15,
         0,
         0,
-        0
+        1
       ],
       [
-        19,
         0,
-        65,
-        817,
-        14,
-        147,
-        41
+        0,
+        28,
+        695,
+        0,
+        33,
+        20
       ],
       [
-        5,
         0,
         0,
-        5,
-        13,
         1,
-        0
-      ],
-      [
-        1,
-        0,
+        15,
+        3,
         2,
-        23,
-        0,
-        150,
-        0
+        3
       ],
       [
+        0,
+        0,
+        4,
+        53,
+        0,
+        110,
+        9
+      ],
+      [
+        0,
+        0,
+        3,
+        21,
         1,
-        0,
-        0,
-        10,
-        0,
-        0,
-        69
+        1,
+        54
       ]
     ],
     "classes": [
@@ -270,16 +278,20 @@
   {
     "model_name": "logistic_regression",
     "feature_col": "masked_positional_tokens",
+    "target_col": "silver_label",
     "ngram_range": [
       1,
       2
     ],
     "weighting": "tfidf",
-    "accuracy": 0.7842,
-    "macro_precision": 0.4612,
-    "macro_recall": 0.5745,
-    "macro_f1": 0.504,
-    "micro_f1": 0.7842,
+    "accuracy": 0.8677,
+    "macro_precision": 0.5673,
+    "macro_recall": 0.5619,
+    "macro_f1": 0.5632,
+    "macro_f1_std": 0.0171,
+    "positive_f1": 0.5057,
+    "positive_f1_std": 0.0213,
+    "micro_f1": 0.8677,
     "per_class": {
       "CONFIRMS": {
         "precision": 0.0,
@@ -294,33 +306,33 @@
         "support": 4
       },
       "LOCATED_IN": {
-        "precision": 0.6878,
-        "recall": 0.942,
-        "f1": 0.7951,
+        "precision": 0.8562,
+        "recall": 0.9058,
+        "f1": 0.8803,
         "support": 138
       },
       "NONE": {
-        "precision": 0.9375,
-        "recall": 0.7616,
-        "f1": 0.8404,
-        "support": 1103
+        "precision": 0.9084,
+        "recall": 0.9072,
+        "f1": 0.9078,
+        "support": 776
       },
       "REVEALS": {
-        "precision": 0.4286,
-        "recall": 0.625,
-        "f1": 0.5085,
+        "precision": 0.6842,
+        "recall": 0.5417,
+        "f1": 0.6047,
         "support": 24
       },
       "SUPPORTS": {
-        "precision": 0.5143,
-        "recall": 0.8182,
-        "f1": 0.6316,
+        "precision": 0.7784,
+        "recall": 0.7784,
+        "f1": 0.7784,
         "support": 176
       },
       "TARGETS": {
-        "precision": 0.6604,
-        "recall": 0.875,
-        "f1": 0.7527,
+        "precision": 0.7442,
+        "recall": 0.8,
+        "f1": 0.7711,
         "support": 80
       }
     },
@@ -329,64 +341,64 @@
         0,
         0,
         0,
+        0,
+        4,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        3,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        125,
+        12,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        19,
+        704,
+        0,
+        34,
+        19
+      ],
+      [
+        0,
+        0,
+        1,
+        7,
+        13,
+        2,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        37,
+        0,
+        137,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        12,
         1,
         3,
-        0,
-        0
-      ],
-      [
-        0,
-        0,
-        0,
-        1,
-        3,
-        0,
-        0
-      ],
-      [
-        0,
-        0,
-        130,
-        8,
-        0,
-        0,
-        0
-      ],
-      [
-        18,
-        0,
-        59,
-        840,
-        14,
-        136,
-        36
-      ],
-      [
-        3,
-        0,
-        0,
-        6,
-        15,
-        0,
-        0
-      ],
-      [
-        1,
-        0,
-        0,
-        31,
-        0,
-        144,
-        0
-      ],
-      [
-        1,
-        0,
-        0,
-        9,
-        0,
-        0,
-        70
+        64
       ]
     ],
     "classes": [
@@ -404,16 +416,20 @@
   {
     "model_name": "logistic_regression",
     "feature_col": "masked_positional_tokens",
+    "target_col": "silver_label",
     "ngram_range": [
       1,
       3
     ],
     "weighting": "tfidf",
-    "accuracy": 0.7796,
-    "macro_precision": 0.4596,
-    "macro_recall": 0.5616,
-    "macro_f1": 0.4988,
-    "micro_f1": 0.7796,
+    "accuracy": 0.8669,
+    "macro_precision": 0.5649,
+    "macro_recall": 0.5751,
+    "macro_f1": 0.5688,
+    "macro_f1_std": 0.0222,
+    "positive_f1": 0.5124,
+    "positive_f1_std": 0.0263,
+    "micro_f1": 0.8669,
     "per_class": {
       "CONFIRMS": {
         "precision": 0.0,
@@ -428,33 +444,33 @@
         "support": 4
       },
       "LOCATED_IN": {
-        "precision": 0.6949,
-        "recall": 0.8913,
-        "f1": 0.781,
+        "precision": 0.8621,
+        "recall": 0.9058,
+        "f1": 0.8834,
         "support": 138
       },
       "NONE": {
-        "precision": 0.9265,
-        "recall": 0.7652,
-        "f1": 0.8381,
-        "support": 1103
+        "precision": 0.916,
+        "recall": 0.8995,
+        "f1": 0.9077,
+        "support": 776
       },
       "REVEALS": {
-        "precision": 0.4412,
+        "precision": 0.7143,
         "recall": 0.625,
-        "f1": 0.5172,
+        "f1": 0.6667,
         "support": 24
       },
       "SUPPORTS": {
-        "precision": 0.5107,
-        "recall": 0.8125,
-        "f1": 0.6272,
+        "precision": 0.7735,
+        "recall": 0.7955,
+        "f1": 0.7843,
         "support": 176
       },
       "TARGETS": {
-        "precision": 0.6442,
-        "recall": 0.8375,
-        "f1": 0.7283,
+        "precision": 0.6882,
+        "recall": 0.8,
+        "f1": 0.7399,
         "support": 80
       }
     },
@@ -463,8 +479,8 @@
         0,
         0,
         0,
-        2,
-        2,
+        0,
+        4,
         0,
         0
       ],
@@ -472,55 +488,55 @@
         0,
         0,
         0,
-        1,
         3,
-        0,
-        0
-      ],
-      [
-        0,
-        0,
-        123,
-        14,
-        0,
-        1,
-        0
-      ],
-      [
-        18,
-        0,
-        54,
-        844,
-        14,
-        136,
-        37
-      ],
-      [
-        3,
-        0,
-        0,
-        6,
-        15,
-        0,
-        0
-      ],
-      [
         1,
         0,
-        0,
-        32,
-        0,
-        143,
         0
       ],
       [
-        1,
         0,
         0,
+        125,
         12,
         0,
         0,
-        67
+        1
+      ],
+      [
+        0,
+        0,
+        18,
+        698,
+        0,
+        35,
+        25
+      ],
+      [
+        0,
+        0,
+        1,
+        4,
+        15,
+        2,
+        2
+      ],
+      [
+        0,
+        0,
+        1,
+        34,
+        0,
+        140,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        11,
+        1,
+        4,
+        64
       ]
     ],
     "classes": [
@@ -538,16 +554,20 @@
   {
     "model_name": "logistic_regression",
     "feature_col": "masked_positional_tokens",
+    "target_col": "silver_label",
     "ngram_range": [
       1,
       3
     ],
     "weighting": "count",
-    "accuracy": 0.7959,
-    "macro_precision": 0.4696,
-    "macro_recall": 0.4956,
-    "macro_f1": 0.4816,
-    "micro_f1": 0.7959,
+    "accuracy": 0.8819,
+    "macro_precision": 0.5676,
+    "macro_recall": 0.5643,
+    "macro_f1": 0.5647,
+    "macro_f1_std": 0.0395,
+    "positive_f1": 0.5055,
+    "positive_f1_std": 0.0474,
+    "micro_f1": 0.8819,
     "per_class": {
       "CONFIRMS": {
         "precision": 0.0,
@@ -562,33 +582,33 @@
         "support": 4
       },
       "LOCATED_IN": {
-        "precision": 0.7164,
-        "recall": 0.6957,
-        "f1": 0.7059,
+        "precision": 0.8552,
+        "recall": 0.8986,
+        "f1": 0.8763,
         "support": 138
       },
       "NONE": {
-        "precision": 0.8717,
-        "recall": 0.8504,
-        "f1": 0.8609,
-        "support": 1103
+        "precision": 0.9223,
+        "recall": 0.9175,
+        "f1": 0.9199,
+        "support": 776
       },
       "REVEALS": {
-        "precision": 0.4643,
-        "recall": 0.5417,
-        "f1": 0.5,
+        "precision": 0.6316,
+        "recall": 0.5,
+        "f1": 0.5581,
         "support": 24
       },
       "SUPPORTS": {
-        "precision": 0.5648,
-        "recall": 0.6193,
-        "f1": 0.5908,
+        "precision": 0.8232,
+        "recall": 0.8466,
+        "f1": 0.8347,
         "support": 176
       },
       "TARGETS": {
-        "precision": 0.6703,
-        "recall": 0.7625,
-        "f1": 0.7135,
+        "precision": 0.7412,
+        "recall": 0.7875,
+        "f1": 0.7636,
         "support": 80
       }
     },
@@ -606,55 +626,55 @@
         0,
         0,
         0,
+        3,
         1,
-        3,
         0,
         0
       ],
       [
         0,
         0,
-        96,
-        42,
-        0,
-        0,
-        0
-      ],
-      [
-        3,
-        0,
-        38,
-        938,
-        10,
-        84,
-        30
-      ],
-      [
-        3,
-        0,
-        0,
-        8,
+        124,
         13,
         0,
-        0
+        0,
+        1
       ],
       [
-        0,
-        0,
-        0,
-        67,
-        0,
-        109,
-        0
-      ],
-      [
-        1,
         0,
         0,
         18,
+        712,
+        2,
+        29,
+        15
+      ],
+      [
         0,
         0,
-        61
+        1,
+        5,
+        12,
+        1,
+        5
+      ],
+      [
+        0,
+        0,
+        1,
+        24,
+        1,
+        149,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        13,
+        1,
+        2,
+        63
       ]
     ],
     "classes": [
@@ -672,16 +692,20 @@
   {
     "model_name": "linear_svm",
     "feature_col": "masked_positional_tokens",
+    "target_col": "silver_label",
     "ngram_range": [
       1,
       3
     ],
     "weighting": "tfidf",
-    "accuracy": 0.7927,
-    "macro_precision": 0.46,
-    "macro_recall": 0.5595,
-    "macro_f1": 0.4998,
-    "micro_f1": 0.7927,
+    "accuracy": 0.886,
+    "macro_precision": 0.5815,
+    "macro_recall": 0.5885,
+    "macro_f1": 0.5847,
+    "macro_f1_std": 0.0205,
+    "positive_f1": 0.5285,
+    "positive_f1_std": 0.0236,
+    "micro_f1": 0.886,
     "per_class": {
       "CONFIRMS": {
         "precision": 0.0,
@@ -696,33 +720,33 @@
         "support": 4
       },
       "LOCATED_IN": {
-        "precision": 0.6946,
-        "recall": 0.8406,
-        "f1": 0.7607,
+        "precision": 0.8936,
+        "recall": 0.913,
+        "f1": 0.9032,
         "support": 138
       },
       "NONE": {
-        "precision": 0.9099,
-        "recall": 0.7969,
-        "f1": 0.8497,
-        "support": 1103
+        "precision": 0.9226,
+        "recall": 0.9214,
+        "f1": 0.922,
+        "support": 776
       },
       "REVEALS": {
-        "precision": 0.4324,
+        "precision": 0.6957,
         "recall": 0.6667,
-        "f1": 0.5246,
+        "f1": 0.6809,
         "support": 24
       },
       "SUPPORTS": {
-        "precision": 0.5197,
-        "recall": 0.75,
-        "f1": 0.614,
+        "precision": 0.8229,
+        "recall": 0.8182,
+        "f1": 0.8205,
         "support": 176
       },
       "TARGETS": {
-        "precision": 0.6635,
-        "recall": 0.8625,
-        "f1": 0.75,
+        "precision": 0.7356,
+        "recall": 0.8,
+        "f1": 0.7665,
         "support": 80
       }
     },
@@ -731,6 +755,15 @@
         0,
         0,
         0,
+        0,
+        4,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
         2,
         2,
         0,
@@ -739,56 +772,47 @@
       [
         0,
         0,
+        126,
+        12,
         0,
+        0,
+        0
+      ],
+      [
         1,
+        0,
+        14,
+        715,
+        0,
+        27,
+        19
+      ],
+      [
+        0,
+        0,
+        0,
         3,
-        0,
-        0
+        16,
+        2,
+        3
       ],
       [
         0,
-        0,
-        116,
-        21,
         0,
         1,
-        0
+        30,
+        0,
+        144,
+        1
       ],
       [
+        0,
+        0,
+        0,
+        13,
         1,
-        0,
-        51,
-        879,
-        16,
-        121,
-        35
-      ],
-      [
-        0,
-        0,
-        0,
-        8,
-        16,
-        0,
-        0
-      ],
-      [
-        0,
-        0,
-        0,
-        44,
-        0,
-        132,
-        0
-      ],
-      [
-        0,
-        0,
-        0,
-        11,
-        0,
-        0,
-        69
+        2,
+        64
       ]
     ],
     "classes": [
@@ -806,16 +830,20 @@
   {
     "model_name": "random_forest",
     "feature_col": "masked_positional_tokens",
+    "target_col": "silver_label",
     "ngram_range": [
       1,
       3
     ],
     "weighting": "tfidf",
-    "accuracy": 0.8012,
-    "macro_precision": 0.4884,
-    "macro_recall": 0.4434,
-    "macro_f1": 0.4601,
-    "micro_f1": 0.8012,
+    "accuracy": 0.8536,
+    "macro_precision": 0.5453,
+    "macro_recall": 0.4711,
+    "macro_f1": 0.4929,
+    "macro_f1_std": 0.0406,
+    "positive_f1": 0.4253,
+    "positive_f1_std": 0.0453,
+    "micro_f1": 0.8536,
     "per_class": {
       "CONFIRMS": {
         "precision": 0.0,
@@ -830,33 +858,33 @@
         "support": 4
       },
       "LOCATED_IN": {
-        "precision": 0.7686,
-        "recall": 0.6739,
-        "f1": 0.7181,
+        "precision": 0.8472,
+        "recall": 0.8841,
+        "f1": 0.8652,
         "support": 138
       },
       "NONE": {
-        "precision": 0.8532,
-        "recall": 0.8749,
-        "f1": 0.8639,
-        "support": 1103
+        "precision": 0.8678,
+        "recall": 0.9304,
+        "f1": 0.898,
+        "support": 776
       },
       "REVEALS": {
-        "precision": 0.5385,
-        "recall": 0.2917,
-        "f1": 0.3784,
+        "precision": 0.4286,
+        "recall": 0.125,
+        "f1": 0.1935,
         "support": 24
       },
       "SUPPORTS": {
-        "precision": 0.5745,
-        "recall": 0.6136,
-        "f1": 0.5934,
+        "precision": 0.7963,
+        "recall": 0.733,
+        "f1": 0.7633,
         "support": 176
       },
       "TARGETS": {
-        "precision": 0.6842,
-        "recall": 0.65,
-        "f1": 0.6667,
+        "precision": 0.8772,
+        "recall": 0.625,
+        "f1": 0.7299,
         "support": 80
       }
     },
@@ -865,64 +893,64 @@
         0,
         0,
         0,
-        4,
-        0,
-        0,
-        0
-      ],
-      [
-        0,
-        0,
-        0,
-        4,
-        0,
+        1,
+        3,
         0,
         0
       ],
       [
         0,
         0,
-        93,
-        45,
         0,
+        3,
+        1,
         0,
         0
       ],
       [
         0,
         0,
-        28,
-        965,
-        6,
-        80,
-        24
+        122,
+        16,
+        0,
+        0,
+        0
       ],
       [
-        0,
         0,
         0,
         17,
-        7,
+        722,
         0,
+        31,
+        6
+      ],
+      [
+        0,
+        0,
+        1,
+        18,
+        3,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        46,
+        0,
+        129,
         0
       ],
       [
         0,
         0,
+        3,
+        26,
         0,
-        68,
-        0,
-        108,
-        0
-      ],
-      [
-        0,
-        0,
-        0,
-        28,
-        0,
-        0,
-        52
+        1,
+        50
       ]
     ],
     "classes": [
@@ -941,28 +969,36 @@
     "experiment_id": "P2.8_Neural_MLP_2Layer",
     "act": "Ato 1 (Baseline)",
     "model_name": "two_layer_mlp",
+    "target_col": "silver_label",
     "ngram_range": [
       1,
       3
     ],
     "weighting": "tfidf",
-    "macro_precision": 0.4491,
-    "macro_recall": 0.5545,
-    "macro_f1": 0.4896
+    "macro_precision": 0.5201,
+    "macro_recall": 0.4748,
+    "macro_f1": 0.4881,
+    "macro_f1_std": 0.033,
+    "positive_f1": 0.4217,
+    "positive_f1_std": 0.0381
   },
   {
     "model_name": "logistic_regression",
     "feature_col": "masked_pos_and_clusters",
+    "target_col": "silver_label",
     "ngram_range": [
       1,
       3
     ],
     "weighting": "tfidf",
-    "accuracy": 0.7763,
-    "macro_precision": 0.4574,
-    "macro_recall": 0.5571,
-    "macro_f1": 0.4956,
-    "micro_f1": 0.7763,
+    "accuracy": 0.8461,
+    "macro_precision": 0.5539,
+    "macro_recall": 0.5092,
+    "macro_f1": 0.5191,
+    "macro_f1_std": 0.0467,
+    "positive_f1": 0.4566,
+    "positive_f1_std": 0.0547,
+    "micro_f1": 0.8461,
     "per_class": {
       "CONFIRMS": {
         "precision": 0.0,
@@ -977,33 +1013,33 @@
         "support": 4
       },
       "LOCATED_IN": {
-        "precision": 0.6821,
-        "recall": 0.8551,
-        "f1": 0.7588,
+        "precision": 0.8592,
+        "recall": 0.8841,
+        "f1": 0.8714,
         "support": 138
       },
       "NONE": {
-        "precision": 0.9233,
-        "recall": 0.7643,
-        "f1": 0.8363,
-        "support": 1103
+        "precision": 0.8851,
+        "recall": 0.9034,
+        "f1": 0.8941,
+        "support": 776
       },
       "REVEALS": {
-        "precision": 0.4412,
-        "recall": 0.625,
-        "f1": 0.5172,
+        "precision": 0.7,
+        "recall": 0.2917,
+        "f1": 0.4118,
         "support": 24
       },
       "SUPPORTS": {
-        "precision": 0.5106,
-        "recall": 0.8182,
-        "f1": 0.6288,
+        "precision": 0.744,
+        "recall": 0.7102,
+        "f1": 0.7267,
         "support": 176
       },
       "TARGETS": {
-        "precision": 0.6442,
-        "recall": 0.8375,
-        "f1": 0.7283,
+        "precision": 0.6889,
+        "recall": 0.775,
+        "f1": 0.7294,
         "support": 80
       }
     },
@@ -1012,64 +1048,64 @@
         0,
         0,
         0,
-        1,
         2,
         1,
-        0
+        0,
+        1
       ],
       [
         0,
         0,
         0,
-        1,
         3,
-        0,
-        0
-      ],
-      [
-        0,
-        0,
-        118,
-        19,
-        0,
         1,
+        0,
         0
       ],
       [
-        18,
         0,
-        55,
-        843,
+        0,
+        122,
         14,
-        136,
-        37
-      ],
-      [
-        3,
         0,
-        0,
-        6,
-        15,
-        0,
-        0
-      ],
-      [
         1,
-        0,
-        0,
-        31,
-        0,
-        144,
-        0
+        1
       ],
       [
+        0,
+        0,
+        17,
+        701,
+        0,
+        38,
+        20
+      ],
+      [
+        0,
+        0,
         1,
+        10,
+        7,
+        2,
+        4
+      ],
+      [
         0,
         0,
-        12,
+        1,
+        48,
+        0,
+        125,
+        2
+      ],
+      [
         0,
         0,
-        67
+        1,
+        14,
+        1,
+        2,
+        62
       ]
     ],
     "classes": [
@@ -1082,21 +1118,27 @@
       "TARGETS"
     ],
     "experiment_id": "P2.9_ClusterNgrams_1to3grams_LR",
-    "act": "Ato 2 (Breakthrough)"
+    "act": "Ato 2 (Breakthrough)",
+    "inductive_macro_f1": 0.535,
+    "inductive_positive_f1": 0.4747
   },
   {
     "model_name": "hierarchical_cascade",
     "feature_col": "masked_positional_tokens",
+    "target_col": "silver_label",
     "ngram_range": [
       1,
       3
     ],
     "weighting": "tfidf",
-    "accuracy": 0.7659,
-    "macro_precision": 0.4477,
-    "macro_recall": 0.5629,
-    "macro_f1": 0.489,
-    "micro_f1": 0.7659,
+    "accuracy": 0.8461,
+    "macro_precision": 0.5294,
+    "macro_recall": 0.5731,
+    "macro_f1": 0.5478,
+    "macro_f1_std": 0.0215,
+    "positive_f1": 0.4903,
+    "positive_f1_std": 0.022,
+    "micro_f1": 0.8461,
     "per_class": {
       "CONFIRMS": {
         "precision": 0.0,
@@ -1111,327 +1153,37 @@
         "support": 4
       },
       "LOCATED_IN": {
-        "precision": 0.6648,
-        "recall": 0.8768,
-        "f1": 0.7562,
+        "precision": 0.8377,
+        "recall": 0.9348,
+        "f1": 0.8836,
         "support": 138
       },
       "NONE": {
-        "precision": 0.937,
-        "recall": 0.7416,
-        "f1": 0.8279,
-        "support": 1103
+        "precision": 0.9414,
+        "recall": 0.8492,
+        "f1": 0.893,
+        "support": 776
       },
       "REVEALS": {
-        "precision": 0.4545,
-        "recall": 0.625,
-        "f1": 0.5263,
+        "precision": 0.6087,
+        "recall": 0.5833,
+        "f1": 0.5957,
         "support": 24
       },
       "SUPPORTS": {
-        "precision": 0.47,
-        "recall": 0.8466,
-        "f1": 0.6045,
+        "precision": 0.6652,
+        "recall": 0.8693,
+        "f1": 0.7537,
         "support": 176
       },
       "TARGETS": {
-        "precision": 0.6071,
-        "recall": 0.85,
-        "f1": 0.7083,
+        "precision": 0.6526,
+        "recall": 0.775,
+        "f1": 0.7086,
         "support": 80
       }
     },
     "confusion_matrix": [
-      [
-        0,
-        0,
-        0,
-        0,
-        2,
-        2,
-        0
-      ],
-      [
-        0,
-        0,
-        0,
-        1,
-        3,
-        0,
-        0
-      ],
-      [
-        0,
-        0,
-        121,
-        15,
-        0,
-        1,
-        1
-      ],
-      [
-        7,
-        0,
-        59,
-        818,
-        13,
-        163,
-        43
-      ],
-      [
-        3,
-        0,
-        0,
-        5,
-        15,
-        1,
-        0
-      ],
-      [
-        1,
-        0,
-        2,
-        24,
-        0,
-        149,
-        0
-      ],
-      [
-        1,
-        0,
-        0,
-        10,
-        0,
-        1,
-        68
-      ]
-    ],
-    "classes": [
-      "CONFIRMS",
-      "EXCLUDES",
-      "LOCATED_IN",
-      "NONE",
-      "REVEALS",
-      "SUPPORTS",
-      "TARGETS"
-    ],
-    "experiment_id": "P2.10_HierarchicalCascade_StandardNgrams",
-    "act": "Ato 2 (Breakthrough)"
-  },
-  {
-    "experiment_id": "P2.11_ThreeTower_DistMult_MLP",
-    "act": "Ato 2 (Breakthrough)",
-    "model_name": "three_tower_distmult_mlp",
-    "ngram_range": [
-      1,
-      2
-    ],
-    "weighting": "svd_48d",
-    "macro_precision": 0.4693,
-    "macro_recall": 0.5947,
-    "macro_f1": 0.5169
-  },
-  {
-    "model_name": "hierarchical_cascade",
-    "feature_col": "masked_pos_and_clusters",
-    "ngram_range": [
-      1,
-      3
-    ],
-    "weighting": "tfidf",
-    "accuracy": 0.7979,
-    "macro_precision": 0.4828,
-    "macro_recall": 0.5845,
-    "macro_f1": 0.5217,
-    "micro_f1": 0.7979,
-    "per_class": {
-      "CONFIRMS": {
-        "precision": 0.0,
-        "recall": 0.0,
-        "f1": 0.0,
-        "support": 4
-      },
-      "EXCLUDES": {
-        "precision": 0.0,
-        "recall": 0.0,
-        "f1": 0.0,
-        "support": 4
-      },
-      "LOCATED_IN": {
-        "precision": 0.7326,
-        "recall": 0.9133,
-        "f1": 0.8131,
-        "support": 150
-      },
-      "NONE": {
-        "precision": 0.9441,
-        "recall": 0.7729,
-        "f1": 0.8499,
-        "support": 1070
-      },
-      "REVEALS": {
-        "precision": 0.4545,
-        "recall": 0.625,
-        "f1": 0.5263,
-        "support": 24
-      },
-      "SUPPORTS": {
-        "precision": 0.5191,
-        "recall": 0.8402,
-        "f1": 0.6417,
-        "support": 194
-      },
-      "TARGETS": {
-        "precision": 0.729,
-        "recall": 0.9398,
-        "f1": 0.8211,
-        "support": 83
-      }
-    },
-    "confusion_matrix": [
-      [
-        0,
-        0,
-        0,
-        0,
-        2,
-        2,
-        0
-      ],
-      [
-        0,
-        0,
-        0,
-        1,
-        3,
-        0,
-        0
-      ],
-      [
-        0,
-        0,
-        137,
-        10,
-        0,
-        3,
-        0
-      ],
-      [
-        7,
-        0,
-        50,
-        827,
-        13,
-        144,
-        29
-      ],
-      [
-        3,
-        0,
-        0,
-        5,
-        15,
-        1,
-        0
-      ],
-      [
-        1,
-        0,
-        0,
-        30,
-        0,
-        163,
-        0
-      ],
-      [
-        1,
-        0,
-        0,
-        3,
-        0,
-        1,
-        78
-      ]
-    ],
-    "classes": [
-      "CONFIRMS",
-      "EXCLUDES",
-      "LOCATED_IN",
-      "NONE",
-      "REVEALS",
-      "SUPPORTS",
-      "TARGETS"
-    ],
-    "experiment_id": "P2.12_Denoised_HierarchicalCascade_ClusterNgrams",
-    "act": "Ato 2 (Breakthrough)"
-  },
-  {
-    "model_name": "hierarchical_cascade",
-    "feature_col": "typed_features",
-    "ngram_range": [
-      1,
-      3
-    ],
-    "weighting": "tfidf",
-    "accuracy": 0.8273,
-    "macro_precision": 0.4939,
-    "macro_recall": 0.6082,
-    "macro_f1": 0.5385,
-    "micro_f1": 0.8273,
-    "per_class": {
-      "CONFIRMS": {
-        "precision": 0.0,
-        "recall": 0.0,
-        "f1": 0.0,
-        "support": 4
-      },
-      "EXCLUDES": {
-        "precision": 0.0,
-        "recall": 0.0,
-        "f1": 0.0,
-        "support": 4
-      },
-      "LOCATED_IN": {
-        "precision": 0.7382,
-        "recall": 0.94,
-        "f1": 0.827,
-        "support": 150
-      },
-      "NONE": {
-        "precision": 0.9586,
-        "recall": 0.8,
-        "f1": 0.8721,
-        "support": 1070
-      },
-      "REVEALS": {
-        "precision": 0.4444,
-        "recall": 0.6667,
-        "f1": 0.5333,
-        "support": 24
-      },
-      "SUPPORTS": {
-        "precision": 0.5952,
-        "recall": 0.8866,
-        "f1": 0.7122,
-        "support": 194
-      },
-      "TARGETS": {
-        "precision": 0.7207,
-        "recall": 0.9639,
-        "f1": 0.8247,
-        "support": 83
-      }
-    },
-    "confusion_matrix": [
-      [
-        0,
-        0,
-        0,
-        0,
-        3,
-        1,
-        0
-      ],
       [
         0,
         0,
@@ -1444,47 +1196,56 @@
       [
         0,
         0,
-        141,
-        8,
         0,
         1,
-        0
-      ],
-      [
-        5,
-        0,
-        50,
-        856,
-        13,
-        115,
-        31
-      ],
-      [
         3,
         0,
-        0,
-        5,
-        16,
-        0,
         0
       ],
       [
         0,
+        0,
+        129,
+        8,
+        0,
+        0,
+        1
+      ],
+      [
         0,
         0,
         22,
-        0,
-        172,
-        0
+        659,
+        1,
+        66,
+        28
       ],
       [
+        0,
+        0,
         1,
-        0,
-        0,
         2,
+        14,
+        5,
+        2
+      ],
+      [
         0,
         0,
-        80
+        1,
+        20,
+        0,
+        153,
+        2
+      ],
+      [
+        0,
+        0,
+        1,
+        10,
+        1,
+        6,
+        62
       ]
     ],
     "classes": [
@@ -1496,21 +1257,185 @@
       "SUPPORTS",
       "TARGETS"
     ],
-    "experiment_id": "P2.13_TypedNgrams_HierarchicalCascade",
-    "act": "Ato 3 (Neuro-Symbolic Fusion)"
+    "experiment_id": "P2.10_HierarchicalCascade_StandardNgrams",
+    "act": "Ato 2 (Breakthrough)",
+    "cascade_plus_clusters_raw_silver_macro_f1": 0.5122,
+    "cascade_plus_clusters_raw_silver_positive_f1": 0.4506
   },
   {
-    "experiment_id": "P2.14_NeuroSymbolic_Ensemble_Tuned",
-    "act": "Ato 3 (Neuro-Symbolic Fusion)",
-    "model_name": "neuro_symbolic_ensemble",
+    "experiment_id": "P2.11_ThreeTower_DistMult_MLP",
+    "act": "Ato 2 (Breakthrough)",
+    "model_name": "three_tower_distmult_mlp",
+    "target_col": "silver_label",
+    "ngram_range": [
+      1,
+      2
+    ],
+    "weighting": "svd_48d",
+    "macro_precision": 0.6357,
+    "macro_recall": 0.7299,
+    "macro_f1": 0.676,
+    "macro_f1_std": 0.0329,
+    "positive_f1": 0.6346,
+    "positive_f1_std": 0.0378
+  },
+  {
+    "model_name": "hierarchical_cascade",
+    "feature_col": "masked_pos_and_clusters",
+    "target_col": "denoised_label",
     "ngram_range": [
       1,
       3
     ],
-    "weighting": "hybrid_dense_sparse_prior",
-    "macro_precision": 0.5663,
-    "macro_recall": 0.6929,
-    "macro_f1": 0.6173,
+    "weighting": "tfidf",
+    "accuracy": 0.827,
+    "macro_precision": 0.5105,
+    "macro_recall": 0.5346,
+    "macro_f1": 0.5142,
+    "macro_f1_std": 0.0409,
+    "positive_f1": 0.4523,
+    "positive_f1_std": 0.0497,
+    "micro_f1": 0.827,
+    "per_class": {
+      "CONFIRMS": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 4
+      },
+      "EXCLUDES": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 4
+      },
+      "LOCATED_IN": {
+        "precision": 0.7862,
+        "recall": 0.9058,
+        "f1": 0.8418,
+        "support": 138
+      },
+      "NONE": {
+        "precision": 0.9408,
+        "recall": 0.8368,
+        "f1": 0.8857,
+        "support": 778
+      },
+      "REVEALS": {
+        "precision": 0.6,
+        "recall": 0.375,
+        "f1": 0.4615,
+        "support": 24
+      },
+      "SUPPORTS": {
+        "precision": 0.6203,
+        "recall": 0.84,
+        "f1": 0.7136,
+        "support": 175
+      },
+      "TARGETS": {
+        "precision": 0.6263,
+        "recall": 0.7848,
+        "f1": 0.6966,
+        "support": 79
+      }
+    },
+    "confusion_matrix": [
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        2,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        3,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        125,
+        8,
+        0,
+        4,
+        1
+      ],
+      [
+        0,
+        0,
+        30,
+        651,
+        1,
+        69,
+        27
+      ],
+      [
+        0,
+        0,
+        2,
+        3,
+        9,
+        5,
+        5
+      ],
+      [
+        0,
+        0,
+        1,
+        24,
+        0,
+        147,
+        3
+      ],
+      [
+        0,
+        0,
+        1,
+        5,
+        1,
+        10,
+        62
+      ]
+    ],
+    "classes": [
+      "CONFIRMS",
+      "EXCLUDES",
+      "LOCATED_IN",
+      "NONE",
+      "REVEALS",
+      "SUPPORTS",
+      "TARGETS"
+    ],
+    "experiment_id": "P2.12_Denoised_HierarchicalCascade_ClusterNgrams",
+    "act": "Ato 2 (Breakthrough)",
+    "raw_silver_macro_f1": 0.5122,
+    "raw_silver_positive_f1": 0.4506
+  },
+  {
+    "model_name": "hierarchical_cascade",
+    "feature_col": "typed_features",
+    "target_col": "denoised_label",
+    "ngram_range": [
+      1,
+      3
+    ],
+    "weighting": "tfidf",
+    "accuracy": 0.8794,
+    "macro_precision": 0.6121,
+    "macro_recall": 0.6629,
+    "macro_f1": 0.6335,
+    "macro_f1_std": 0.0642,
+    "positive_f1": 0.5864,
+    "positive_f1_std": 0.0741,
+    "micro_f1": 0.8794,
     "per_class": {
       "CONFIRMS": {
         "precision": 0.0,
@@ -1525,34 +1450,175 @@
         "support": 4
       },
       "LOCATED_IN": {
-        "precision": 0.7602,
-        "recall": 0.9933,
-        "f1": 0.8613,
-        "support": 150
+        "precision": 0.8919,
+        "recall": 0.9565,
+        "f1": 0.9231,
+        "support": 138
       },
       "NONE": {
-        "precision": 0.9755,
-        "recall": 0.8196,
-        "f1": 0.8908,
-        "support": 1070
+        "precision": 0.9619,
+        "recall": 0.8753,
+        "f1": 0.9166,
+        "support": 778
       },
       "REVEALS": {
-        "precision": 0.4688,
-        "recall": 0.625,
-        "f1": 0.5357,
+        "precision": 0.5909,
+        "recall": 0.5417,
+        "f1": 0.5652,
         "support": 24
       },
       "SUPPORTS": {
-        "precision": 0.6456,
-        "recall": 0.9485,
-        "f1": 0.7683,
-        "support": 194
+        "precision": 0.7149,
+        "recall": 0.9314,
+        "f1": 0.8089,
+        "support": 175
       },
       "TARGETS": {
-        "precision": 0.7143,
-        "recall": 0.9639,
-        "f1": 0.8205,
-        "support": 83
+        "precision": 0.7253,
+        "recall": 0.8354,
+        "f1": 0.7765,
+        "support": 79
+      }
+    },
+    "confusion_matrix": [
+      [
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0
+      ],
+      [
+        0,
+        2,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        132,
+        6,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        15,
+        681,
+        2,
+        58,
+        21
+      ],
+      [
+        0,
+        2,
+        1,
+        3,
+        13,
+        3,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        10,
+        0,
+        163,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        8,
+        1,
+        4,
+        66
+      ]
+    ],
+    "classes": [
+      "CONFIRMS",
+      "EXCLUDES",
+      "LOCATED_IN",
+      "NONE",
+      "REVEALS",
+      "SUPPORTS",
+      "TARGETS"
+    ],
+    "experiment_id": "P2.13_TypedNgrams_HierarchicalCascade",
+    "act": "Ato 3 (Neuro-Symbolic Fusion)",
+    "raw_silver_macro_f1": 0.633,
+    "raw_silver_positive_f1": 0.5861
+  },
+  {
+    "experiment_id": "P2.14_NeuroSymbolic_Ensemble_Tuned",
+    "act": "Ato 3 (Neuro-Symbolic Fusion)",
+    "model_name": "neuro_symbolic_ensemble",
+    "target_col": "denoised_label",
+    "ngram_range": [
+      1,
+      3
+    ],
+    "weighting": "hybrid_dense_sparse_prior",
+    "macro_precision": 0.6487,
+    "macro_recall": 0.7285,
+    "macro_f1": 0.6828,
+    "macro_f1_std": 0.0371,
+    "positive_f1": 0.6419,
+    "positive_f1_std": 0.0415,
+    "raw_silver_macro_f1": 0.6844,
+    "raw_silver_positive_f1": 0.6435,
+    "per_class": {
+      "CONFIRMS": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 4
+      },
+      "EXCLUDES": {
+        "precision": 0.3333,
+        "recall": 0.5,
+        "f1": 0.4,
+        "support": 4
+      },
+      "LOCATED_IN": {
+        "precision": 0.8816,
+        "recall": 0.971,
+        "f1": 0.9241,
+        "support": 138
+      },
+      "NONE": {
+        "precision": 0.9759,
+        "recall": 0.8856,
+        "f1": 0.9286,
+        "support": 778
+      },
+      "REVEALS": {
+        "precision": 0.8,
+        "recall": 0.8333,
+        "f1": 0.8163,
+        "support": 24
+      },
+      "SUPPORTS": {
+        "precision": 0.7925,
+        "recall": 0.96,
+        "f1": 0.8682,
+        "support": 175
+      },
+      "TARGETS": {
+        "precision": 0.7576,
+        "recall": 0.9494,
+        "f1": 0.8427,
+        "support": 79
       }
     }
   }

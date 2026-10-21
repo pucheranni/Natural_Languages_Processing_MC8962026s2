@@ -205,6 +205,10 @@ def run_cross_validation_ablation(
     y_probs_all = []
 
     all_classes = np.sort(df_dataset[target_col].unique())
+    pos_classes = [c for c in all_classes if c != 'NONE']
+
+    fold_f1_macros = []
+    fold_f1_positives = []
 
     for val_fold in folds:
         train_df = df_dataset[df_dataset[fold_col] != val_fold]
@@ -221,13 +225,26 @@ def run_cross_validation_ablation(
         preds = clf.predict(val_df[feature_col].tolist())
         probs = clf.predict_proba(val_df[feature_col].tolist())
 
-        y_true_all.extend(val_df[target_col].tolist())
+        y_true_fold = val_df[target_col].tolist()
+        y_true_all.extend(y_true_fold)
         y_pred_all.extend(preds)
         y_probs_all.extend(probs)
 
-    # Métricas agregadas
+        _, _, f1_m_f, _ = precision_recall_fscore_support(
+            y_true_fold, preds, labels=all_classes, average='macro', zero_division=0
+        )
+        _, _, f1_p_f, _ = precision_recall_fscore_support(
+            y_true_fold, preds, labels=pos_classes, average='macro', zero_division=0
+        )
+        fold_f1_macros.append(float(f1_m_f))
+        fold_f1_positives.append(float(f1_p_f))
+
+    # Métricas agregadas (pooled OOF sobre todas as classes do dataset)
     p_macro, r_macro, f1_macro, _ = precision_recall_fscore_support(
-        y_true_all, y_pred_all, average='macro', zero_division=0
+        y_true_all, y_pred_all, labels=all_classes, average='macro', zero_division=0
+    )
+    _, _, f1_positive, _ = precision_recall_fscore_support(
+        y_true_all, y_pred_all, labels=pos_classes, average='macro', zero_division=0
     )
     p_micro, r_micro, f1_micro, _ = precision_recall_fscore_support(
         y_true_all, y_pred_all, average='micro', zero_division=0
@@ -253,12 +270,16 @@ def run_cross_validation_ablation(
     return {
         'model_name': model_name,
         'feature_col': feature_col,
+        'target_col': target_col,
         'ngram_range': list(ngram_range),
         'weighting': weighting,
         'accuracy': round(float(acc), 4),
         'macro_precision': round(float(p_macro), 4),
         'macro_recall': round(float(r_macro), 4),
         'macro_f1': round(float(f1_macro), 4),
+        'macro_f1_std': round(float(np.std(fold_f1_macros)), 4),
+        'positive_f1': round(float(f1_positive), 4),
+        'positive_f1_std': round(float(np.std(fold_f1_positives)), 4),
         'micro_f1': round(float(f1_micro), 4),
         'per_class': per_class_results,
         'confusion_matrix': cm.tolist(),

@@ -184,21 +184,30 @@ class NeuroSymbolicGraphIntegrator:
         edges_p2 = pd.DataFrame(edges_list)
         edges_p2, triangles_closed = apply_collective_triangle_propagation(edges_p2, boost_damping=0.15)
 
-        # Métricas topológicas comparativas
+        # Métricas topológicas comparativas (densidade direcionada e não-direcionada)
+        v_p1 = len(p1_nodes_df)
         v_total = len(nodes_p2)
         e_total = len(edges_p2)
         e_p1 = len(p1_edges_df)
-        density = (2.0 * e_total) / (v_total * (v_total - 1)) if v_total > 1 else 0.0
+
+        density_dir_p1 = float(e_p1) / (v_p1 * (v_p1 - 1)) if v_p1 > 1 else 0.0
+        density_dir_p2 = float(e_total) / (v_total * (v_total - 1)) if v_total > 1 else 0.0
+        density_undir_p1 = (2.0 * e_p1) / (v_p1 * (v_p1 - 1)) if v_p1 > 1 else 0.0
+        density_undir_p2 = (2.0 * e_total) / (v_total * (v_total - 1)) if v_total > 1 else 0.0
 
         metrics = {
-            'total_nodes_p1': len(p1_nodes_df),
+            'total_nodes_p1': v_p1,
             'total_nodes_p2': v_total,
-            'oov_nodes_added': len(nodes_p2) - len(p1_nodes_df),
+            'oov_nodes_added': v_total - v_p1,
             'total_edges_p1': e_p1,
             'total_edges_p2': e_total,
             'novel_ml_edges_added': new_edges_added,
             'relative_edge_gain_pct': round((new_edges_added / max(1, e_p1)) * 100, 2),
-            'graph_density_p2': round(density, 6),
+            'graph_density_directed_p1': round(density_dir_p1, 6),
+            'graph_density_directed_p2': round(density_dir_p2, 6),
+            'graph_density_undirected_p1': round(density_undir_p1, 6),
+            'graph_density_undirected_p2': round(density_undir_p2, 6),
+            'graph_density_p2': round(density_undir_p2, 6),
             'confidence_threshold': confidence_threshold,
             'triangles_closed': triangles_closed
         }

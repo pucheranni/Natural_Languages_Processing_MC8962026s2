@@ -191,36 +191,50 @@ def main():
 
     # P2.8: MLP 2-Camadas Tradicional (Comprovando superparametrização e perda para LR)
     print(f"  -> Executando P2.8_Neural_MLP_2Layer (MLP Tradicional D_in x 128)...")
+    all_classes_silver = np.sort(relation_df['silver_label'].unique())
+    pos_classes_silver = [c for c in all_classes_silver if c != 'NONE']
+
     mlp_pipeline = ClinicalNeuralPipeline(input_mode='tfidf_sparse', epochs=20, batch_size=32)
     mlp_y_true, mlp_y_pred = [], []
+    mlp_fold_f1, mlp_fold_pos_f1 = [], []
     for f in sorted(relation_df['fold'].unique()):
         tr = relation_df[relation_df['fold'] != f]
         val = relation_df[relation_df['fold'] == f]
         mlp_pipeline.fit(tr['masked_positional_tokens'].tolist(), tr['silver_label'].tolist())
         preds = mlp_pipeline.predict(val['masked_positional_tokens'].tolist())
-        mlp_y_true.extend(val['silver_label'].tolist())
+        y_val_f = val['silver_label'].tolist()
+        mlp_y_true.extend(y_val_f)
         mlp_y_pred.extend(preds)
+        _, _, f1_m_f, _ = precision_recall_fscore_support(y_val_f, preds, labels=all_classes_silver, average='macro', zero_division=0)
+        _, _, f1_p_f, _ = precision_recall_fscore_support(y_val_f, preds, labels=pos_classes_silver, average='macro', zero_division=0)
+        mlp_fold_f1.append(float(f1_m_f))
+        mlp_fold_pos_f1.append(float(f1_p_f))
 
-    mlp_p, mlp_r, mlp_f1, _ = precision_recall_fscore_support(mlp_y_true, mlp_y_pred, average='macro', zero_division=0)
+    mlp_p, mlp_r, mlp_f1, _ = precision_recall_fscore_support(mlp_y_true, mlp_y_pred, labels=all_classes_silver, average='macro', zero_division=0)
+    _, _, mlp_pos_f1, _ = precision_recall_fscore_support(mlp_y_true, mlp_y_pred, labels=pos_classes_silver, average='macro', zero_division=0)
     ablation_results.append({
         'experiment_id': 'P2.8_Neural_MLP_2Layer',
         'act': 'Ato 1 (Baseline)',
         'model_name': 'two_layer_mlp',
+        'target_col': 'silver_label',
         'ngram_range': [1, 3],
         'weighting': 'tfidf',
         'macro_precision': round(float(mlp_p), 4),
         'macro_recall': round(float(mlp_r), 4),
-        'macro_f1': round(float(mlp_f1), 4)
+        'macro_f1': round(float(mlp_f1), 4),
+        'macro_f1_std': round(float(np.std(mlp_fold_f1)), 4),
+        'positive_f1': round(float(mlp_pos_f1), 4),
+        'positive_f1_std': round(float(np.std(mlp_fold_pos_f1)), 4)
     })
-    print(f"     MLP 2-Layer Macro-F1: {mlp_f1:.4f} | Precision: {mlp_p:.4f} | Recall: {mlp_r:.4f}")
+    print(f"     MLP 2-Layer Macro-F1: {mlp_f1:.4f} (±{np.std(mlp_fold_f1):.4f}) | Pos-F1: {mlp_pos_f1:.4f}")
 
     # =========================================================================
     # ATO 2: As 5 Viradas de Jogo BioNLP (Rompendo o Muro do 0.50)
     # =========================================================================
     print(f"\n  --- ATO 2: As Inovações Científicas (Rompendo o Muro do 0.50) ---")
 
-    # P2.9: N-Grams Abstratos de Clusters PPMI-SVD (Provando que trigramas superam bigramas!)
-    print(f"  -> Executando P2.9_ClusterNgrams_1to3grams_LR (Quebrando ortogonalidade de paráfrases)...")
+    # P2.9: N-Grams Abstratos de Clusters PPMI-SVD
+    print(f"  -> Executando P2.9_ClusterNgrams_1to3grams_LR (Templates de Clusters Semânticos)...")
     res_clust = run_cross_validation_ablation(
         relation_df,
         feature_col='masked_pos_and_clusters',
@@ -232,7 +246,42 @@ def main():
     res_clust['experiment_id'] = 'P2.9_ClusterNgrams_1to3grams_LR'
     res_clust['act'] = 'Ato 2 (Breakthrough)'
     ablation_results.append(res_clust)
-    print(f"     Cluster N-Grams Macro-F1: {res_clust['macro_f1']:.4f} (Trigramas agora superam bigramas!)")
+    print(f"     Cluster N-Grams (Transdutivo) Macro-F1: {res_clust['macro_f1']:.4f} (±{res_clust['macro_f1_std']:.4f})")
+
+    # Verificação Estritamente Indutiva (Refit de PPMI-SVD + KMeans dentro de cada fold de treino)
+    print(f"  -> Executando Auditoria Indutiva (PPMI-SVD 64d + KMeans K=32 ajustados estritamente por fold de treino)...")
+    inductive_features = pd.Series(index=relation_df.index, dtype=str)
+    case_texts_map = dict(zip(cases_df['case_id'].astype(str), cases_df['case_text'].astype(str)))
+    for f in sorted(relation_df['fold'].unique()):
+        tr_mask = (relation_df['fold'] != f)
+        val_mask = (relation_df['fold'] == f)
+        train_cases = relation_df.loc[tr_mask, 'case_id'].astype(str).unique()
+        tr_sents = []
+        for cid in train_cases:
+            txt = case_texts_map.get(cid, "")
+            for s in re.split(r'[.!?]+\s+', txt):
+                toks = re.findall(r'\b[\w\-]+\b', s)
+                if len(toks) >= 2:
+                    tr_sents.append(toks)
+        svd_fold = DistributionalSVD(embedding_dim=64, window_size=5, min_count=2)
+        svd_fold.fit_transform(tr_sents)
+        clust_fold = DistributionalClusterNgramExtractor(n_clusters=32, random_state=42)
+        clust_fold.fit(svd_fold.word2idx, svd_fold.matrix_64d)
+        inductive_features.loc[val_mask] = relation_df.loc[val_mask, 'masked_positional_tokens'].apply(
+            clust_fold.augment_feature_string
+        )
+    relation_df['masked_pos_and_clusters_inductive'] = inductive_features
+    res_clust_ind = run_cross_validation_ablation(
+        relation_df,
+        feature_col='masked_pos_and_clusters_inductive',
+        target_col='silver_label',
+        model_name='logistic_regression',
+        ngram_range=(1, 3),
+        weighting='tfidf'
+    )
+    res_clust['inductive_macro_f1'] = res_clust_ind['macro_f1']
+    res_clust['inductive_positive_f1'] = res_clust_ind['positive_f1']
+    print(f"     Cluster N-Grams (Estritamente Indutivo por Fold) Macro-F1: {res_clust_ind['macro_f1']:.4f} | Pos-F1: {res_clust_ind['positive_f1']:.4f}")
 
     # P2.10: Cascata Hierárquica de 2 Estágios (Eliminando canibalização do NONE)
     print(f"  -> Executando P2.10_HierarchicalCascade_StandardNgrams (Detector Link -> Especialista)...")
@@ -247,11 +296,24 @@ def main():
     res_casc['experiment_id'] = 'P2.10_HierarchicalCascade_StandardNgrams'
     res_casc['act'] = 'Ato 2 (Breakthrough)'
     ablation_results.append(res_casc)
-    print(f"     Hierarchical Cascade Macro-F1: {res_casc['macro_f1']:.4f}")
+    print(f"     Hierarchical Cascade Macro-F1: {res_casc['macro_f1']:.4f} (±{res_casc['macro_f1_std']:.4f})")
+
+    # P2.10b (Ablação Intermediária): Cascata Hierárquica + Cluster N-Grams SEM Denoising (em silver_label bruto)
+    print(f"  -> Executando Ablação Intermediária: Cascata + Cluster N-Grams em silver_label original (sem denoising)...")
+    res_casc_clust_raw = run_cross_validation_ablation(
+        relation_df,
+        feature_col='masked_pos_and_clusters',
+        target_col='silver_label',
+        model_name='hierarchical_cascade',
+        ngram_range=(1, 3),
+        weighting='tfidf'
+    )
+    res_casc['cascade_plus_clusters_raw_silver_macro_f1'] = res_casc_clust_raw['macro_f1']
+    res_casc['cascade_plus_clusters_raw_silver_positive_f1'] = res_casc_clust_raw['positive_f1']
+    print(f"     Cascata + Cluster N-Grams (Un-denoised Silver) Macro-F1: {res_casc_clust_raw['macro_f1']:.4f} | Pos-F1: {res_casc_clust_raw['positive_f1']:.4f}")
 
     # P2.11: Rede Neural Trilinear de 3 Torres (Clinical DistMult-MLP)
-    print(f"  -> Executando P2.11_ThreeTower_DistMult_MLP (h1 * h_ctx * h2 com ~11k parâmetros)...")
-    # Prepara vetores das entidades E1, E2
+    print(f"  -> Executando P2.11_ThreeTower_DistMult_MLP (h1 * h_ctx * h2 com ~12k parâmetros)...")
     all_types = sorted(set(relation_df['e1_type'].unique()).union(relation_df['e2_type'].unique()))
     type2idx = {t: i for i, t in enumerate(all_types)}
 
@@ -275,6 +337,7 @@ def main():
 
     # Avaliação 5-Fold para ThreeTowerPipeline
     tt_y_true, tt_y_pred = [], []
+    tt_fold_f1, tt_fold_pos_f1 = [], []
     for f in sorted(relation_df['fold'].unique()):
         idx_tr = np.where(relation_df['fold'] != f)[0]
         idx_val = np.where(relation_df['fold'] == f)[0]
@@ -289,25 +352,34 @@ def main():
         )
         tt_pipe.fit(e1_all[idx_tr], e2_all[idx_tr], ctx_sparse_all[idx_tr], relation_df.iloc[idx_tr]['silver_label'].tolist())
         preds_fold = tt_pipe.predict(e1_all[idx_val], e2_all[idx_val], ctx_sparse_all[idx_val])
-        tt_y_true.extend(relation_df.iloc[idx_val]['silver_label'].tolist())
+        y_val_f = relation_df.iloc[idx_val]['silver_label'].tolist()
+        tt_y_true.extend(y_val_f)
         tt_y_pred.extend(preds_fold)
+        _, _, f1_m_f, _ = precision_recall_fscore_support(y_val_f, preds_fold, labels=all_classes_silver, average='macro', zero_division=0)
+        _, _, f1_p_f, _ = precision_recall_fscore_support(y_val_f, preds_fold, labels=pos_classes_silver, average='macro', zero_division=0)
+        tt_fold_f1.append(float(f1_m_f))
+        tt_fold_pos_f1.append(float(f1_p_f))
 
-    tt_p, tt_r, tt_f1, _ = precision_recall_fscore_support(tt_y_true, tt_y_pred, average='macro', zero_division=0)
+    tt_p, tt_r, tt_f1, _ = precision_recall_fscore_support(tt_y_true, tt_y_pred, labels=all_classes_silver, average='macro', zero_division=0)
+    _, _, tt_pos_f1, _ = precision_recall_fscore_support(tt_y_true, tt_y_pred, labels=pos_classes_silver, average='macro', zero_division=0)
     ablation_results.append({
         'experiment_id': 'P2.11_ThreeTower_DistMult_MLP',
         'act': 'Ato 2 (Breakthrough)',
         'model_name': 'three_tower_distmult_mlp',
+        'target_col': 'silver_label',
         'ngram_range': [1, 2],
         'weighting': 'svd_48d',
         'macro_precision': round(float(tt_p), 4),
         'macro_recall': round(float(tt_r), 4),
-        'macro_f1': round(float(tt_f1), 4)
+        'macro_f1': round(float(tt_f1), 4),
+        'macro_f1_std': round(float(np.std(tt_fold_f1)), 4),
+        'positive_f1': round(float(tt_pos_f1), 4),
+        'positive_f1_std': round(float(np.std(tt_fold_pos_f1)), 4)
     })
-    print(f"     Three-Tower DistMult Macro-F1: {tt_f1:.4f} (Superou o MLP tradicional e a Regressão Logística!)")
+    print(f"     Three-Tower DistMult Macro-F1: {tt_f1:.4f} (±{np.std(tt_fold_f1):.4f}) | Pos-F1: {tt_pos_f1:.4f}")
 
     # Auditoria de Ruído com Confident Learning (Denoising OOF das Regras do P1)
     print(f"\n  -> Executando Auditoria de Ruído Out-of-Fold (Confident Learning Denoising)...")
-    # Coleta probabilidades OOF com a Cascata Hierárquica em Cluster N-Grams
     oof_probs_all = np.zeros((len(relation_df), len(res_casc['classes'])))
     oof_classes = np.array(res_casc['classes'])
 
@@ -321,7 +393,6 @@ def main():
             relation_df.iloc[idx_tr]['silver_label'].tolist()
         )
         oof_probs = clf_oof.predict_proba(relation_df.iloc[idx_val]['masked_pos_and_clusters'].tolist())
-        # Alinha colunas de classes
         for j, cname in enumerate(clf_oof.classes_):
             target_idx = np.where(oof_classes == cname)[0][0]
             oof_probs_all[idx_val, target_idx] = oof_probs[:, j]
@@ -339,8 +410,8 @@ def main():
     print(f"  -> {len(audit_log)} rótulos ruidosos de coocorrência do P1 auditados e corrigidos!")
     print(f"  -> Log de auditoria salvo em: {audit_path}")
 
-    # P2.12: Cascata Hierárquica com Clusters + Rótulos Denoised
-    print(f"  -> Executando P2.12_Denoised_HierarchicalCascade_ClusterNgrams (Pico de Performance)...")
+    # P2.12: Cascata Hierárquica com Clusters + Rótulos Denoised (e avaliação paralela no Silver Bruto)
+    print(f"  -> Executando P2.12_Denoised_HierarchicalCascade_ClusterNgrams (Pico de Performance Ato 2)...")
     res_denoised = run_cross_validation_ablation(
         relation_df,
         feature_col='masked_pos_and_clusters',
@@ -351,8 +422,10 @@ def main():
     )
     res_denoised['experiment_id'] = 'P2.12_Denoised_HierarchicalCascade_ClusterNgrams'
     res_denoised['act'] = 'Ato 2 (Breakthrough)'
+    res_denoised['raw_silver_macro_f1'] = res_casc_clust_raw['macro_f1']
+    res_denoised['raw_silver_positive_f1'] = res_casc_clust_raw['positive_f1']
     ablation_results.append(res_denoised)
-    print(f"     Denoised Cascade + Cluster N-Grams Macro-F1: {res_denoised['macro_f1']:.4f} | Recall: {res_denoised['macro_recall']:.4f} | Precision: {res_denoised['macro_precision']:.4f}")
+    print(f"     Denoised Cascade + Cluster N-Grams Macro-F1: {res_denoised['macro_f1']:.4f} (±{res_denoised['macro_f1_std']:.4f}) | Raw Silver Macro-F1: {res_casc_clust_raw['macro_f1']:.4f}")
 
     # =========================================================================
     # ATO 3: Fusão Precoce de Informação Ontológica & Ensemble Neuro-Simbólico
@@ -365,7 +438,7 @@ def main():
         build_typed_positional_features(r, r['masked_pos_and_clusters']) for _, r in relation_df.iterrows()
     ]
 
-    # P2.13: Cascata Hierárquica sobre Typed Features
+    # P2.13: Cascata Hierárquica sobre Typed Features (avaliado tanto em denoised_label quanto em silver_label)
     print(f"  -> Executando P2.13_TypedNgrams_HierarchicalCascade...")
     res_typed = run_cross_validation_ablation(
         relation_df,
@@ -375,14 +448,25 @@ def main():
         ngram_range=(1, 3),
         weighting='tfidf'
     )
+    res_typed_raw = run_cross_validation_ablation(
+        relation_df,
+        feature_col='typed_features',
+        target_col='silver_label',
+        model_name='hierarchical_cascade',
+        ngram_range=(1, 3),
+        weighting='tfidf'
+    )
     res_typed['experiment_id'] = 'P2.13_TypedNgrams_HierarchicalCascade'
     res_typed['act'] = 'Ato 3 (Neuro-Symbolic Fusion)'
+    res_typed['raw_silver_macro_f1'] = res_typed_raw['macro_f1']
+    res_typed['raw_silver_positive_f1'] = res_typed_raw['positive_f1']
     ablation_results.append(res_typed)
-    print(f"     Typed N-Grams Cascade Macro-F1: {res_typed['macro_f1']:.4f} | Recall: {res_typed['macro_recall']:.4f}")
+    print(f"     Typed N-Grams Cascade Macro-F1 (Denoised): {res_typed['macro_f1']:.4f} (±{res_typed['macro_f1_std']:.4f}) | Raw Silver Macro-F1: {res_typed_raw['macro_f1']:.4f}")
 
     # P2.14: Ensemble Híbrido P2.11 (DistMult MLP) + P2.12/P2.13 (Cascata) + Prior MeSH + Calibração de Classes
     print(f"  -> Executando P2.14_NeuroSymbolic_Ensemble_Tuned (Ensemble Híbrido + Prior MeSH + Calibração)...")
     all_classes_target = np.sort(relation_df['denoised_label'].unique())
+    pos_classes_target = [c for c in all_classes_target if c != 'NONE']
     class2idx_map = {c: i for i, c in enumerate(all_classes_target)}
     y_all_indices = np.array([class2idx_map[y] for y in relation_df['denoised_label']])
 
@@ -400,6 +484,8 @@ def main():
         prior_onto_dataset[i] = prior_evaluator.get_ontological_prior_dist(str(r['e1_type']), str(r['e2_type']))
 
     ens_y_true, ens_y_pred = [], []
+    ens_y_true_raw_silver = []
+    ens_fold_f1, ens_fold_pos_f1 = [], []
 
     for f in sorted(relation_df['fold'].unique()):
         idx_tr = np.where(relation_df['fold'] != f)[0]
@@ -448,10 +534,22 @@ def main():
         )
 
         preds_fold_idx = np.argmax(calibrated_val_probs, axis=1)
-        ens_y_pred.extend(all_classes_target[preds_fold_idx])
-        ens_y_true.extend(relation_df.iloc[idx_val]['denoised_label'].tolist())
+        preds_fold_labels = all_classes_target[preds_fold_idx]
+        y_val_f = relation_df.iloc[idx_val]['denoised_label'].tolist()
+        ens_y_pred.extend(preds_fold_labels)
+        ens_y_true.extend(y_val_f)
+        ens_y_true_raw_silver.extend(relation_df.iloc[idx_val]['silver_label'].tolist())
 
-    ens_p, ens_r, ens_f1, _ = precision_recall_fscore_support(ens_y_true, ens_y_pred, average='macro', zero_division=0)
+        _, _, f1_m_f, _ = precision_recall_fscore_support(y_val_f, preds_fold_labels, labels=all_classes_target, average='macro', zero_division=0)
+        _, _, f1_p_f, _ = precision_recall_fscore_support(y_val_f, preds_fold_labels, labels=pos_classes_target, average='macro', zero_division=0)
+        ens_fold_f1.append(float(f1_m_f))
+        ens_fold_pos_f1.append(float(f1_p_f))
+
+    ens_p, ens_r, ens_f1, _ = precision_recall_fscore_support(ens_y_true, ens_y_pred, labels=all_classes_target, average='macro', zero_division=0)
+    _, _, ens_pos_f1, _ = precision_recall_fscore_support(ens_y_true, ens_y_pred, labels=pos_classes_target, average='macro', zero_division=0)
+    _, _, ens_raw_silver_f1, _ = precision_recall_fscore_support(ens_y_true_raw_silver, ens_y_pred, labels=all_classes_target, average='macro', zero_division=0)
+    _, _, ens_raw_silver_pos_f1, _ = precision_recall_fscore_support(ens_y_true_raw_silver, ens_y_pred, labels=pos_classes_target, average='macro', zero_division=0)
+
     p_per, r_per, f1_per, sup_per = precision_recall_fscore_support(ens_y_true, ens_y_pred, labels=all_classes_target, zero_division=0)
     per_class_ens = {}
     for i, cls_name in enumerate(all_classes_target):
@@ -466,14 +564,20 @@ def main():
         'experiment_id': 'P2.14_NeuroSymbolic_Ensemble_Tuned',
         'act': 'Ato 3 (Neuro-Symbolic Fusion)',
         'model_name': 'neuro_symbolic_ensemble',
+        'target_col': 'denoised_label',
         'ngram_range': [1, 3],
         'weighting': 'hybrid_dense_sparse_prior',
         'macro_precision': round(float(ens_p), 4),
         'macro_recall': round(float(ens_r), 4),
         'macro_f1': round(float(ens_f1), 4),
+        'macro_f1_std': round(float(np.std(ens_fold_f1)), 4),
+        'positive_f1': round(float(ens_pos_f1), 4),
+        'positive_f1_std': round(float(np.std(ens_fold_pos_f1)), 4),
+        'raw_silver_macro_f1': round(float(ens_raw_silver_f1), 4),
+        'raw_silver_positive_f1': round(float(ens_raw_silver_pos_f1), 4),
         'per_class': per_class_ens
     })
-    print(f"     Neuro-Symbolic Ensemble Macro-F1: {ens_f1:.4f} | Recall: {ens_r:.4f} | Precision: {ens_p:.4f}")
+    print(f"     Neuro-Symbolic Ensemble Macro-F1 (Denoised): {ens_f1:.4f} (±{np.std(ens_fold_f1):.4f}) | Pos-F1: {ens_pos_f1:.4f} | Raw Silver Macro-F1: {ens_raw_silver_f1:.4f}")
 
     # Salva relatório de ablação consolidado
     benchmark_path = data_processed_dir / 'ablation_benchmark.json'

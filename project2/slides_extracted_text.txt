@@ -1,0 +1,316 @@
+=== SLIDE 1 ===
+MC896 - PROJETO 2 EQUIPE: EQUIPE
+ClinicalClinical
+inator
+Natural Language Processing (NLP) 
+Xtractor
+by
+Caio.................248243
+Fábio...............247079
+Gustavo...........247149
+Wallysson......200061
+
+=== SLIDE 2 ===
+MC896 - PROJETO 2
+our team
+GUSTAVO WALYSSON CAIO FÁBIO
+
+
+=== SLIDE 3 ===
+MC896 - PROJETO 2 EQUIPE
+01.01.
+02.02.
+03.03.
+04.04.
+05.05.
+CONTEXTO
+N-GRAMAS
+MODELOS
+AUDITORIA
+CONCLUSÃO
+
+=== SLIDE 4 ===
+Contexto
+01.01.
+
+=== SLIDE 5 ===
+MC896 - PROJETO 2
+ EQUIPE
+Limites das regras
+PADRÕES LITERAIS VOCABULÁRIO
+FECHADO
+RELAÇÕES POR TIPO CONFIANÇA
+BINÁRIA
+Só reconhece “revealed” se
+o verbo estiver na lista.
+Só encontra entidades que
+estão no gazetteer MeSH.
+SUPPORTS e LOCATED_IN são
+inferidas pela combinação de
+tipos e coocorrência na
+sentença.
+Uma aresta existe ou não
+existe.
+Relato clínico  →  Regras do P1  →  Grafo clínico
+
+=== SLIDE 6 ===
+MC896 - PROJETO 2
+ EQUIPE
+A pergunta
+“O aprendizado a partir do próprio texto consegue superar ou complementar as
+regras do P1?”
+Dados: 56 relatos MultiCaRe · 1.465 sentenças · 28.565 tokens
+Nossa interpretação: vetores calculados por contagem no próprio corpus (PPMI-
+SVD, aula nlp-060), nada pré-treinado.
+
+=== SLIDE 7 ===
+Visão
+geral
+do
+pipeline
+01.01.
+MultiCaRe + grafo P1
+N-gramas, PMI e PPMI-SVD
+Supervisão fraca → classificadores
+Auditoria
+Grafo P2 e visualizador
+
+=== SLIDE 8 ===
+N-gramas
+Q u e  c o n h e c i m e n t o  o s  n - g r a m a s  e x t r a e m  s e m  n e n h u m a
+r e g r a  e s c r i t a  à  m ã o ?
+02.02.
+
+=== SLIDE 9 ===
+MC896 - PROJETO 2 EQUIPE
+Colocações por
+PMI
+INTRAUTERINE FETAL
+DEMISE
+LACTATE
+DEHYDROGENASE
+SHORTNESS OF BREATH
+NORMAL SINUS RHYTHM
+PMI = log₂ [P(w₁w₂) / P(w₁)·P(w₂)]: quantas vezes mais
+juntas do que o acaso prevê.
+Ruído: “isolates from canada”, “mmhg heart rate”.
+45 candidatos a entidades novas (OOV), tipados por
+morfologia de caracteres.
+Boas colocações ↓
+
+=== SLIDE 10 ===
+MC896 - PROJETO 2 EQUIPE
+Semântica
+COOCORRÊNCIA ±5 PPMI SVD 64 DIM.
+CONTAGENS
+NO CORPUS
+ASSOCIAÇÃO
+ALÉM DO ACASO
+32 CLUSTERS
+Palavras que se comportam igual.
+Exemplo de cluster: revealed / showed / demonstrated [conferir
+no notebook]
+Ponte com Jurafsky: P(dinner | for) ≈ P(lunch | for)
+DISTRIBUTIVA
+
+=== SLIDE 11 ===
+Das regras aos modelos
+U m  c l a s s i f i c a d o r  t r e i n a d o  a p r e n d e  a  r e c o n h e c e r  r e l a ç õ e s ?
+03.03.
+
+=== SLIDE 12 ===
+MC896 - PROJETO 2
+ EQUIPE
+Supervisão
+fraca
+RÓTULOS
+SILVER
+As regras do P1 rotulam os
+pares; pares sem aresta
+viram NONE.
+CONTEXTO
+Features PRE / BTW / POST
+com gatilhos mascarados; 5
+folds por paciente (case_id).
+1.529 PARES
+NONE 1.103
+SUPPORTS 176 · LOCATED_IN 138
+TARGETS 80 · REVEALS 24
+CONFIRMS 4 · EXCLUDES 4
+
+=== SLIDE 13 ===
+Ato 1: modelos e representações
+Macro-F1 por modelo
+NB
+RF
+MLP
+SVM
+LR
+0,12
+0,46
+0,49
+0,50
+0,50
+Ablação por n-grama
+uni
+bi
+tri
+0,485
+0,504
+0,499
+A ablação combina features posicionais; não isola o
+tamanho do n-grama de palavras.
+
+
+=== SLIDE 14 ===
+MC896 - PROJETO 2
+ EQUIPE
+CLUSTERS DE N-
+GRAMAS
+Macro-F1 0,4956
+▼  abaixo do baseline
+(0,4988)
+CASCATA: EXISTE
+RELAÇÃO? →  QUAL?
+Macro-F1 0,4890
+▼  abaixo do baseline
+(0,4988)
+MLP DE TRÊS TORRES
+E1 + contexto + E2, interação
+h₁ ⊙ h_ctx ⊙ h₂ (~11 mil
+parâmetros)
+Macro-F1 0,5169 ▲  acima do
+baseline
+Ato 2: ideias da literatura
+
+=== SLIDE 15 ===
+Ato 3
+Mesmo padrão, relações diferentes:
+“pain in the chest” →  LOCATED_IN
+“admitted in December” →  sem relação
+Features novas: SIG_Diagnosis_TO_Anatomy, DIST_SHORT,
+SIG__BTW_in
+Macro-F1: 0,5385
+03.03.
+
+=== SLIDE 16 ===
+Ensemble
+03.03.
+P ∝  (0,55·P_cascata + 0,45·P_MLP) × P_MeSH^0,65
+Precisão 0,566  ·  Recall 0,693  ·  Macro-F1 0,617
+
+=== SLIDE 17 ===
+Auditoria
+O que o modelo realmente aprendeu?
+04.04.
+
+=== SLIDE 18 ===
+MC896 - PROJETO 2
+ EQUIPE
+Sem texto?
+MODELOS DE
+TEXTO
+LR 0,504
+Ato 2 0,522
+Ensemble 0,617
+SÓ TIPOS
+Sem ler nenhuma palavra:
+Só tipos 0,539
+Tipados 0,539
+83,7%
+dos rótulos são determinados pelo
+par de tipos.
+XAI de uma aresta nova:
+sig_examinstance_to_diagnosis,
+type_symptomobservation_anatomy
+
+=== SLIDE 19 ===
+MC896 - PROJETO 2
+ EQUIPEA causa
+O QUE O
+MODELO LEU
+Par CASPR2 × tomografia.
+Caracteres 0–66: “A 49-year-old
+male presented to our clinic for
+further diagnostic”
+ONDE AS
+ENTIDADES ESTÃO
+~4.300: “…ruled out an autoimmune
+encephalitis. Due to the CASPR2
+antibodies…”
+~4.500: “…computed tomography (PET-
+CT) which showed no indication of a
+tumor”
+SÓ 10 PARES
+1.529 de 1.529 pares liam o início
+do relato; só 10 continham as
+duas entidades.
+
+=== SLIDE 20 ===
+Grafo e conclusão
+O que foi produzido e como interpretar?
+05.05.
+
+=== SLIDE 21 ===
+Grafo P1 vs. P2
+Nós: 1.607 →  1.652
+Arestas: 3.757 →  3.991 (+234 do ML)
+Densidade: 0,00291 →  0,00293 (+0,5%)
+RULE_P1 em linha cheia · STATISTICAL_ML em tracejada
+05.05.
+
+=== SLIDE 22 ===
+Visualizador
+a. Linha do tempo com o player sentença
+a sentença
+b. Narrativa sincronizada nos dois sentidos
+com o grafo
+c. Aba de XAI com os pesos β·x reais
+
+=== SLIDE 23 ===
+Limitações
+• Rótulos silver, sem gabarito humano independente
+• Corpus pequeno: contagens como C(located) = 4
+• Viés do PMI para n-gramas raros; nós OOV não validados
+• Macro-F1 instável com classes de 4 exemplos
+• Prior e vetores estimados globalmente
+Os números medem a concordância com as regras do P1 dentro do nosso protocolo, não a precisão clínica.
+
+=== SLIDE 24 ===
+Conclusão
+01 02 03
+N-gramas capturam a
+gramática e as
+regularidades do texto
+clínico. [conferir]
+O rótulo do P1 é, em grande
+parte, a ontologia: um
+baseline de tipos é
+indispensável.
+Auditar o pipeline revelou o
+que os números escondiam.
+[conferir]
+GitHub: https://github.com/THdeCamargoJ/mc896-2s2026-equipe
+
+=== SLIDE 25 ===
+MC896 - PROJETO 2 EQUIPE
+REGRAS FORNECEM ESTRUTURA E RÓTULOS.
+N-GRAMAS REVELAM O CORPUS.
+ML GENERALIZA QUANDO LÊ O CONTEXTO CERTO.
+A AUDITORIA GARANTE QUE OS NÚMEROS
+SIGNIFIQUEM ALGO.
+
+=== SLIDE 26 ===
+Obrigado!
+GitHub do projeto:
+        https://github.com/THdeCamargoJ/mc896-2s2026-equipe
+bye!bye!
+
+=== SLIDE 27 ===
+This presentation template is free for everyone to use thanks to the following:
+Happy designing!
+for the presentation template
+for the photos
+CREDITS
+Pexels, Pixabay
+

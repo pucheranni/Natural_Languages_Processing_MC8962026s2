@@ -7,6 +7,7 @@ Fundamentado em:
 """
 
 import re
+import json
 import random
 from typing import List, Dict, Tuple, Set, Optional, Any
 import numpy as np
@@ -170,6 +171,19 @@ class WeakSupervisionDatasetGenerator:
         pair_counter = 1
         rng = random.Random(self.seed)
 
+        # Mapeamento de sentence_idx das arestas Paciente->Entidade do P1 como fallback rápido
+        node_sent_from_edges = {}
+        for _, erow in edges_df.iterrows():
+            if str(erow['source_id']).endswith('_PAT'):
+                e_attrs = erow.get('attributes', {})
+                if isinstance(e_attrs, str) and e_attrs.strip().startswith('{'):
+                    try:
+                        e_attrs = json.loads(e_attrs)
+                    except Exception:
+                        e_attrs = {}
+                if isinstance(e_attrs, dict) and 'sentence_idx' in e_attrs:
+                    node_sent_from_edges[str(erow['target_id'])] = int(e_attrs['sentence_idx'])
+
         # Agrupa nós por case_id
         nodes_by_case = all_nodes.groupby('case_id')
 
@@ -178,14 +192,67 @@ class WeakSupervisionDatasetGenerator:
             case_text_rows = cases_df[cases_df['case_id'] == case_id]
             if case_text_rows.empty:
                 continue
-            case_text = case_text_rows.iloc[0]['case_text']
+            case_text = str(case_text_rows.iloc[0]['case_text'])
+
+            # Computa limites de sentenças do relato para mapear char_offset -> sentence_idx
+            sent_spans = []
+            last_end = 0
+            for m in re.finditer(r'[.!?]+(?:\s+|$)', case_text):
+                sent_spans.append((last_end, m.end()))
+                last_end = m.end()
+            if last_end < len(case_text):
+                sent_spans.append((last_end, len(case_text)))
 
             # Filtra nós episódicos (ignora paciente e conceitos MeSH globais)
-            episodic_nodes = case_group[
+            raw_episodic = case_group[
                 ~case_group['type'].isin(['Patient', 'CanonicalConcept', 'History'])
             ].to_dict('records')
 
-            # Agrupa nós por sentença (ou aproximação por offsets)
+            # Enriquecimento forense: extrai start_char, end_char, matched_text e sentence_idx reais do JSON attributes['span']
+            episodic_nodes = []
+            for n in raw_episodic:
+                n_copy = dict(n)
+                attrs = n_copy.get('attributes', {})
+                if isinstance(attrs, str) and attrs.strip().startswith('{'):
+                    try:
+                        attrs = json.loads(attrs)
+                    except Exception:
+                        attrs = {}
+                elif not isinstance(attrs, dict):
+                    attrs = {}
+
+                start_c = n_copy.get('start_char')
+                end_c = n_copy.get('end_char')
+                if start_c is None or pd.isna(start_c):
+                    sp = attrs.get('span')
+                    if isinstance(sp, (list, tuple)) and len(sp) == 2:
+                        start_c, end_c = int(sp[0]), int(sp[1])
+                    else:
+                        lbl_search = str(attrs.get('matched_text', n_copy.get('label', '')))
+                        idx_found = case_text.lower().find(lbl_search.lower()) if lbl_search else -1
+                        if idx_found >= 0:
+                            start_c, end_c = idx_found, idx_found + len(lbl_search)
+                        else:
+                            start_c, end_c = 0, len(lbl_search)
+
+                n_copy['start_char'] = int(start_c)
+                n_copy['end_char'] = int(end_c)
+                n_copy['matched_text'] = str(attrs.get('matched_text', n_copy.get('label', '')))
+
+                s_idx = n_copy.get('sentence_idx')
+                if s_idx is None or pd.isna(s_idx):
+                    nid_str = str(n_copy.get('node_id', ''))
+                    if nid_str in node_sent_from_edges:
+                        s_idx = node_sent_from_edges[nid_str]
+                    else:
+                        s_idx = 0
+                        for s_i, (s_start, s_end) in enumerate(sent_spans):
+                            if s_start <= n_copy['start_char'] < s_end:
+                                s_idx = s_i
+                                break
+                n_copy['sentence_idx'] = int(s_idx)
+                episodic_nodes.append(n_copy)
+
             # Para cada par de nós no mesmo caso clínico:
             n_episodic = len(episodic_nodes)
             positive_pairs_case = []
@@ -196,12 +263,8 @@ class WeakSupervisionDatasetGenerator:
                     n1 = episodic_nodes[i]
                     n2 = episodic_nodes[j]
 
-                    s1_idx = n1.get('sentence_idx', 0)
-                    s2_idx = n2.get('sentence_idx', 0)
-
-                    # Considera apenas entidades na mesma sentença ou em sentenças contíguas
-                    if abs(s1_idx - s2_idx) > 1:
-                        continue
+                    s1_idx = n1['sentence_idx']
+                    s2_idx = n2['sentence_idx']
 
                     n1_id = str(n1['node_id'])
                     n2_id = str(n2['node_id'])
@@ -213,6 +276,10 @@ class WeakSupervisionDatasetGenerator:
                         rel_p1 = p1_edge_map.get((case_id_str, n2_id, n1_id))
                         if rel_p1:
                             is_reversed = True
+
+                    # Considera todas as arestas positivas do P1 ou pares na mesma sentença / sentenças contíguas
+                    if not rel_p1 and abs(s1_idx - s2_idx) > 1:
+                        continue
 
                     pair_info = {
                         'n1': n1 if not is_reversed else n2,
@@ -242,38 +309,56 @@ class WeakSupervisionDatasetGenerator:
                 n_tgt = pair_data['n2']
                 sent_idx = pair_data['sentence_idx']
 
-                src_start = int(n_src.get('start_char', 0))
-                src_end = int(n_src.get('end_char', src_start + len(str(n_src.get('label', '')))))
-                tgt_start = int(n_tgt.get('start_char', 0))
-                tgt_end = int(n_tgt.get('end_char', tgt_start + len(str(n_tgt.get('label', '')))))
+                src_start = int(n_src['start_char'])
+                src_end = int(n_src['end_char'])
+                tgt_start = int(n_tgt['start_char'])
+                tgt_end = int(n_tgt['end_char'])
 
-                # Trecho de contexto na sentença
+                # Trecho de contexto real na sentença onde as entidades ocorrem
                 min_char = min(src_start, tgt_start)
                 max_char = max(src_end, tgt_end)
-                char_start_ctx = max(0, min_char - 40)
-                char_end_ctx = min(len(case_text), max_char + 40)
+                char_start_ctx = max(0, min_char - 45)
+                char_end_ctx = min(len(case_text), max_char + 45)
                 raw_ctx = case_text[char_start_ctx:char_end_ctx].replace('\n', ' ')
 
-                # Tokenização simples de palavras para spans
-                ctx_tokens = re.findall(r'\b[\w\-]+\b', raw_ctx)
-                src_text = str(n_src.get('label', '')).lower()
-                tgt_text = str(n_tgt.get('label', '')).lower()
-
-                # Localiza índices dos tokens
-                src_tok_idx = 0
-                tgt_tok_idx = min(len(ctx_tokens) - 1, 1)
-                for tidx, tok in enumerate(ctx_tokens):
-                    if src_text.startswith(tok.lower()):
-                        src_tok_idx = tidx
-                    if tgt_text.startswith(tok.lower()):
-                        tgt_tok_idx = tidx
-
-                dist_tokens = abs(src_tok_idx - tgt_tok_idx)
-                if dist_tokens > self.max_token_dist and label == "NONE":
+                # Tokenização com rastreamento exato de offsets de caracteres dentro de raw_ctx
+                token_matches = list(re.finditer(r'\b[\w\-]+\b', raw_ctx))
+                ctx_tokens = [m.group(0) for m in token_matches]
+                if not ctx_tokens:
                     continue
 
-                e1_span = (src_tok_idx, src_tok_idx + 1)
-                e2_span = (tgt_tok_idx, tgt_tok_idx + 1)
+                rel_src_start = src_start - char_start_ctx
+                rel_src_end = src_end - char_start_ctx
+                rel_tgt_start = tgt_start - char_start_ctx
+                rel_tgt_end = tgt_end - char_start_ctx
+
+                src_tok_indices = [
+                    idx for idx, m in enumerate(token_matches)
+                    if m.end() > rel_src_start and m.start() < rel_src_end
+                ]
+                tgt_tok_indices = [
+                    idx for idx, m in enumerate(token_matches)
+                    if m.end() > rel_tgt_start and m.start() < rel_tgt_end
+                ]
+
+                if src_tok_indices:
+                    e1_span = (src_tok_indices[0], src_tok_indices[-1] + 1)
+                else:
+                    e1_span = (0, 1)
+
+                if tgt_tok_indices:
+                    e2_span = (tgt_tok_indices[0], tgt_tok_indices[-1] + 1)
+                else:
+                    e2_span = (min(len(ctx_tokens) - 1, 1), min(len(ctx_tokens), 2))
+
+                # Distância em tokens entre o fim da primeira entidade e o início da segunda
+                if e1_span[0] <= e2_span[0]:
+                    dist_tokens = max(0, e2_span[0] - e1_span[1])
+                else:
+                    dist_tokens = max(0, e1_span[0] - e2_span[1])
+
+                if dist_tokens > self.max_token_dist and label == "NONE":
+                    continue
 
                 masked_pos_str, masked_triggers = self.supervisor.extract_positional_tokens(
                     sentence_tokens=ctx_tokens,
